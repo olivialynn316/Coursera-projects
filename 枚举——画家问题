@@ -1,0 +1,76 @@
+#include <iostream>
+
+using namespace std;
+
+int wall[16][17];
+int paint[16][17]={0};
+
+int guess(int n){
+   int step=0;
+   for(int i=1; i<n; i++){
+    for(int j=1; j<=n; j++){
+        paint[i+1][j]=(wall[i][j]+paint[i-1][j]+paint[i][j+1]+paint[i][j-1])%2;
+    }
+   }
+   for(int j=1; j<=n; j++){
+    if((paint[n][j-1]+paint[n][j+1]+paint[n-1][j]+paint[n][j])!=wall[n][j]){
+        return 1001;
+    }
+   }
+   for(int i=1; i<n; i++){
+    for(int j=1; j<=n; j++){
+        if(paint[i][j]==1)
+            step++;
+    }
+   }
+   return step;
+}
+
+int enumeration(int n){
+   int step=0;
+   int minstep=1001;
+   int j;
+   while(paint[1][n+1]!=1){
+      step=guess(n);
+      if(step<minstep){
+        minstep=step;
+      }
+      paint[1][1]++;
+      j=1;
+      while(paint[1][j]>1){
+        paint[1][j]=0;
+        j++;
+        paint[1][j]++;
+      }
+   }
+    return minstep;
+}
+int main(){
+    int t;
+    cin>>t;
+    int k[t];
+    int  m=t;
+    while(t){
+        int n;
+        cin>>n;
+        char c;
+        for(int i=1; i<n+1; i++){
+            for(int j=1; j<n+1; j++){
+                cin>>c;
+                if(c=='w'){
+                    wall[i][j]=1;
+                }
+                else if(c=='y'){
+                    wall[i][j]=0;
+                }
+            }
+        }
+        k[t]=enumeration(n);
+        t--;
+
+    }
+    for(int i=m; i>0; i--){
+        cout<<k[i]<<endl;
+    }
+    return 0;
+}
